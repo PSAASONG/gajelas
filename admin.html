@@ -1,225 +1,497 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - WhiteGpt</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="admin.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - WhiteGpt</title>
+    
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
 </head>
 <body>
-  <!-- Header -->
-  <header>
-    <div class="header-content">
-      <div class="header-title">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="currentColor"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <h1>Admin Panel</h1>
-          <span class="brand-subtitle">User Management</span>
-        </div>
-      </div>
-      
-      <div class="header-controls">
-        <a href="index.html" class="back-btn">
-          <i class="fas fa-arrow-left"></i>
-          <span>Kembali ke AI</span>
-        </a>
-        <button id="logout-btn-admin" class="control-btn" title="Logout">
-          <i class="fas fa-sign-out-alt"></i>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <div class="admin-container">
-    <!-- Stats Cards -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon blue">
-          <i class="fas fa-users"></i>
-        </div>
-        <div class="stat-info">
-          <h3 id="total-users">0</h3>
-          <p>Total Users</p>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon green">
-          <i class="fas fa-user-shield"></i>
-        </div>
-        <div class="stat-info">
-          <h3 id="total-admins">0</h3>
-          <p>Admins</p>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon orange">
-          <i class="fas fa-user-clock"></i>
-        </div>
-        <div class="stat-info">
-          <h3 id="expiring-soon">0</h3>
-          <p>Expiring Soon</p>
-        </div>
-      </div>
-      
-      <div class="stat-card">
-        <div class="stat-icon red">
-          <i class="fas fa-user-times"></i>
-        </div>
-        <div class="stat-info">
-          <h3 id="expired-users">0</h3>
-          <p>Expired</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Actions Bar -->
-    <div class="actions-bar">
-      <button id="add-user-btn" class="primary-btn">
-        <i class="fas fa-plus"></i>
-        <span>Tambah User Baru</span>
-      </button>
-      <button id="refresh-btn" class="secondary-btn">
-        <i class="fas fa-sync-alt"></i>
-        <span>Refresh Data</span>
-      </button>
-    </div>
-
-    <!-- Users Table -->
-    <div class="table-container">
-      <div class="table-header">
-        <h2>Daftar User</h2>
-        <div class="search-box">
-          <i class="fas fa-search"></i>
-          <input type="text" id="search-input" placeholder="Cari user...">
-        </div>
-      </div>
-      
-      <div class="table-wrapper">
-        <table id="users-table">
-          <thead>
-            <tr>
-              <th>Username</th>
-              <th>Role</th>
-              <th>Dibuat</th>
-              <th>Expiry Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="users-tbody">
-            <tr class="loading-row">
-              <td colspan="6">
-                <div class="loading-spinner">
-                  <i class="fas fa-spinner fa-spin"></i>
-                  <span>Loading users...</span>
+    <!-- Admin Header -->
+    <header>
+        <div class="header-content">
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-bolt"></i>
+                    <h1>Admin Panel</h1>
                 </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            </div>
+            
+            <div class="header-right">
+                <div class="status-indicator online" id="admin-status-header">
+                    <span class="status-dot"></span>
+                    <span>Online</span>
+                </div>
+                <button id="logout-admin" class="control-btn" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Container -->
+    <div class="admin-container">
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="total-users">0</h3>
+                    <p>Total Users</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="total-admins">0</h3>
+                    <p>Admins</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-comments"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="active-chats">0</h3>
+                    <p>Active Chats</p>
+                </div>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3 id="pending-replies">0</h3>
+                    <p>Pending Replies</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="admin-grid">
+            <!-- Live Chat Section -->
+            <div class="admin-card live-chat-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-comments"></i> Live Chat Support</h2>
+                    <div class="header-actions">
+                        <span class="online-status" id="admin-status">🟢 Online</span>
+                    </div>
+                </div>
+
+                <!-- User List -->
+                <div class="chat-user-list" id="chat-user-list">
+                    <!-- Users will be loaded here -->
+                </div>
+
+                <!-- Chat Area -->
+                <div class="chat-area" id="chat-area" style="display: none;">
+                    <div class="chat-header" id="chat-header">
+                        <button class="back-btn" onclick="backToUserList()">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div class="user-info" id="selected-user-info">
+                            <div class="user-avatar" id="selected-user-avatar">👤</div>
+                            <div>
+                                <h4 id="selected-user-name">Loading...</h4>
+                                <span class="user-status" id="selected-user-status">Online</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-messages" id="admin-chat-messages"></div>
+
+                    <div class="chat-input-area">
+                        <div id="admin-image-preview" class="image-preview" style="display: none;"></div>
+                        <div class="chat-input-wrapper">
+                            <input type="file" id="admin-image-input" accept="image/*" style="display: none;">
+                            <button class="chat-action-btn" onclick="document.getElementById('admin-image-input').click()" title="Send Image">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <input type="text" id="admin-chat-input" placeholder="Ketik pesan..." autocomplete="off">
+                            <button class="chat-send-btn" onclick="sendAdminMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management Section -->
+            <div class="admin-card users-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-users-cog"></i> User Management</h2>
+                    <button class="add-user-btn" onclick="openUserModal()">
+                        <i class="fas fa-plus"></i> Add User
+                    </button>
+                </div>
+
+                <!-- Users Table -->
+                <div class="table-wrapper">
+                    <table class="users-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Last Active</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Add/Edit User Modal -->
-  <div id="user-modal" class="modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modal-title">Tambah User Baru</h2>
-        <button class="modal-close" id="close-modal">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <form id="user-form">
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input type="text" id="username" required placeholder="Masukkan username">
+    <!-- Add/Edit User Modal -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Tambah User Baru</h2>
+                <button class="modal-close" onclick="closeUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="user-form" onsubmit="saveUser(event)">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="text" id="password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="role">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="cancel-btn" onclick="closeUserModal()">Batal</button>
+                    <button type="submit" class="submit-btn">Simpan</button>
+                </div>
+            </form>
         </div>
-        
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="text" id="password" required placeholder="Masukkan password">
-        </div>
-        
-        <div class="form-group">
-          <label for="role">Role</label>
-          <select id="role" required>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-        </div>
-        
-        <div class="form-group">
-          <label for="expiry-date">Expiry Date (Opsional)</label>
-          <input type="datetime-local" id="expiry-date" placeholder="Pilih tanggal expiry">
-          <small>Kosongkan jika tidak ada expiry</small>
-        </div>
-        
-        <div class="form-group checkbox-group">
-          <label>
-            <input type="checkbox" id="is-active" checked>
-            <span>Account Active</span>
-          </label>
-        </div>
-        
-        <div class="modal-actions">
-          <button type="button" class="cancel-btn" id="cancel-btn">Batal</button>
-          <button type="submit" class="submit-btn">
-            <i class="fas fa-save"></i>
-            <span>Simpan</span>
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
 
-  <!-- Delete Confirmation Modal -->
-  <div id="delete-modal" class="modal">
-    <div class="modal-content small">
-      <div class="modal-header">
-        <h2>Konfirmasi Hapus</h2>
-        <button class="modal-close" id="close-delete-modal">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-      
-      <div class="modal-body">
-        <div class="warning-icon">
-          <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        <p>Apakah Anda yakin ingin menghapus user <strong id="delete-username"></strong>?</p>
-        <p class="warning-text">Tindakan ini tidak dapat dibatalkan!</p>
-      </div>
-      
-      <div class="modal-actions">
-        <button type="button" class="cancel-btn" id="cancel-delete-btn">Batal</button>
-        <button type="button" class="delete-btn" id="confirm-delete-btn">
-          <i class="fas fa-trash"></i>
-          <span>Hapus</span>
-        </button>
-      </div>
-    </div>
-  </div>
+    <script>
+        // ========== ADMIN STATE ==========
+        let adminOnline = true;
+        let selectedUserId = null;
+        let liveChatMessages = JSON.parse(localStorage.getItem('live_chat_messages') || '[]');
+        let users = JSON.parse(localStorage.getItem('users_db') || '[]');
+        
+        // Initialize admin status
+        function initAdminStatus() {
+            adminOnline = true;
+            localStorage.setItem('admin_online', 'true');
+            localStorage.setItem('admin_last_activity', Date.now().toString());
+            
+            // Update status every 30 seconds
+            setInterval(() => {
+                localStorage.setItem('admin_last_activity', Date.now().toString());
+            }, 30000);
+        }
 
-  <!-- Toast Notification -->
-  <div id="toast" class="toast">
-    <i class="fas fa-check-circle"></i>
-    <span id="toast-message">Success!</span>
-  </div>
+        // ========== LIVE CHAT FUNCTIONS ==========
+        function loadChatUsers() {
+            const userList = document.getElementById('chat-user-list');
+            const uniqueUsers = [...new Set(liveChatMessages.map(msg => msg.sender === 'user' ? 'user' : msg.sender))];
+            
+            // Get all unique users from messages
+            const users = {};
+            liveChatMessages.forEach(msg => {
+                if (msg.sender === 'user') {
+                    if (!users['user']) {
+                        users['user'] = {
+                            id: 'user',
+                            name: 'Guest User',
+                            avatar: '👤',
+                            lastMessage: msg,
+                            unread: liveChatMessages.filter(m => !m.read && m.sender === 'user').length
+                        };
+                    }
+                }
+            });
 
-  <script src="role-manager.js"></script>
-  <script src="auth-new.js"></script>
-  <script src="admin.js"></script>
+            userList.innerHTML = '';
+            
+            // Add user to list
+            if (users['user']) {
+                const userDiv = document.createElement('div');
+                userDiv.className = 'chat-user-item';
+                userDiv.onclick = () => selectUser('user');
+                userDiv.innerHTML = `
+                    <div class="chat-user-avatar">👤</div>
+                    <div class="chat-user-info">
+                        <div class="chat-user-name">
+                            Guest User
+                            ${users['user'].unread > 0 ? `<span class="unread-badge">${users['user'].unread}</span>` : ''}
+                        </div>
+                        <div class="chat-last-message">
+                            ${users['user'].lastMessage ? users['user'].lastMessage.content.substring(0, 30) + '...' : 'No messages'}
+                        </div>
+                    </div>
+                    <div class="chat-time">
+                        ${users['user'].lastMessage ? new Date(users['user'].lastMessage.timestamp).toLocaleTimeString() : ''}
+                    </div>
+                `;
+                userList.appendChild(userDiv);
+            }
+
+            // Update stats
+            document.getElementById('active-chats').textContent = Object.keys(users).length;
+            document.getElementById('pending-replies').textContent = liveChatMessages.filter(m => !m.read && m.sender === 'user').length;
+        }
+
+        function selectUser(userId) {
+            selectedUserId = userId;
+            document.getElementById('chat-user-list').style.display = 'none';
+            document.getElementById('chat-area').style.display = 'flex';
+            
+            // Mark all messages from this user as read
+            liveChatMessages.forEach(msg => {
+                if (msg.sender === userId && !msg.read) {
+                    msg.read = true;
+                }
+            });
+            localStorage.setItem('live_chat_messages', JSON.stringify(liveChatMessages));
+            
+            loadAdminChatMessages();
+            loadChatUsers();
+        }
+
+        function backToUserList() {
+            selectedUserId = null;
+            document.getElementById('chat-user-list').style.display = 'block';
+            document.getElementById('chat-area').style.display = 'none';
+        }
+
+        function loadAdminChatMessages() {
+            const container = document.getElementById('admin-chat-messages');
+            if (!container || !selectedUserId) return;
+            
+            const userMessages = liveChatMessages.filter(msg => 
+                msg.sender === selectedUserId || msg.sender === 'admin'
+            );
+            
+            container.innerHTML = '';
+            userMessages.forEach(msg => {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `chat-message ${msg.sender === 'admin' ? 'admin' : 'user'}`;
+                
+                if (msg.type === 'image') {
+                    messageDiv.innerHTML = `
+                        <img src="${msg.content}" class="chat-message-image" onclick="window.open(this.src)">
+                        <div class="message-footer">
+                            <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+                            <span class="message-status-icons">
+                                ${msg.read ? '<i class="fas fa-check-double read"></i>' : '<i class="fas fa-check"></i>'}
+                            </span>
+                        </div>
+                    `;
+                } else {
+                    messageDiv.innerHTML = `
+                        ${msg.content}
+                        <div class="message-footer">
+                            <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</span>
+                            <span class="message-status-icons">
+                                ${msg.read ? '<i class="fas fa-check-double read"></i>' : '<i class="fas fa-check"></i>'}
+                            </span>
+                        </div>
+                    `;
+                }
+                
+                container.appendChild(messageDiv);
+            });
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendAdminMessage() {
+            const input = document.getElementById('admin-chat-input');
+            const text = input.value.trim();
+            
+            if (!text || !selectedUserId) return;
+            
+            const message = {
+                id: Date.now(),
+                content: text,
+                sender: 'admin',
+                timestamp: new Date().toISOString(),
+                read: false,
+                type: 'text'
+            };
+            
+            liveChatMessages.push(message);
+            localStorage.setItem('live_chat_messages', JSON.stringify(liveChatMessages));
+            
+            input.value = '';
+            loadAdminChatMessages();
+            loadChatUsers();
+        }
+
+        // Image upload for admin
+        document.getElementById('admin-image-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && selectedUserId) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const message = {
+                        id: Date.now(),
+                        content: e.target.result,
+                        sender: 'admin',
+                        timestamp: new Date().toISOString(),
+                        read: false,
+                        type: 'image'
+                    };
+                    
+                    liveChatMessages.push(message);
+                    localStorage.setItem('live_chat_messages', JSON.stringify(liveChatMessages));
+                    loadAdminChatMessages();
+                    loadChatUsers();
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // ========== USER MANAGEMENT ==========
+        function loadUsers() {
+            const tbody = document.getElementById('users-table-body');
+            
+            if (users.length === 0) {
+                users = [
+                    { id: 1, username: 'admin', password: 'admin123', role: 'admin', active: true, lastSeen: new Date().toISOString() },
+                    { id: 2, username: 'user', password: 'user123', role: 'user', active: true, lastSeen: new Date().toISOString() }
+                ];
+                localStorage.setItem('users_db', JSON.stringify(users));
+            }
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>
+                        <div class="user-cell">
+                            <span class="user-avatar-small">👤</span>
+                            ${user.username}
+                        </div>
+                    </td>
+                    <td><span class="role-badge ${user.role}">${user.role}</span></td>
+                    <td><span class="status-badge ${user.active ? 'active' : 'inactive'}">${user.active ? 'Active' : 'Inactive'}</span></td>
+                    <td>${user.lastSeen ? new Date(user.lastSeen).toLocaleString() : 'Never'}</td>
+                    <td>
+                        <div class="action-btns">
+                            <button class="action-btn edit-btn" onclick="editUser(${user.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="action-btn delete-btn" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Update stats
+            document.getElementById('total-users').textContent = users.length;
+            document.getElementById('total-admins').textContent = users.filter(u => u.role === 'admin').length;
+        }
+
+        function openUserModal(userId = null) {
+            document.getElementById('user-modal').classList.add('active');
+            if (userId) {
+                const user = users.find(u => u.id === userId);
+                document.getElementById('modal-title').textContent = 'Edit User';
+                document.getElementById('username').value = user.username;
+                document.getElementById('password').value = user.password;
+                document.getElementById('role').value = user.role;
+            } else {
+                document.getElementById('modal-title').textContent = 'Tambah User Baru';
+                document.getElementById('user-form').reset();
+            }
+        }
+
+        function closeUserModal() {
+            document.getElementById('user-modal').classList.remove('active');
+        }
+
+        function saveUser(e) {
+            e.preventDefault();
+            
+            const userData = {
+                id: Date.now(),
+                username: document.getElementById('username').value,
+                password: document.getElementById('password').value,
+                role: document.getElementById('role').value,
+                active: true,
+                lastSeen: new Date().toISOString()
+            };
+            
+            users.push(userData);
+            localStorage.setItem('users_db', JSON.stringify(users));
+            
+            closeUserModal();
+            loadUsers();
+        }
+
+        function editUser(userId) {
+            openUserModal(userId);
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Hapus user ini?')) {
+                users = users.filter(u => u.id !== userId);
+                localStorage.setItem('users_db', JSON.stringify(users));
+                loadUsers();
+            }
+        }
+
+        // ========== LOGOUT ==========
+        function logout() {
+            localStorage.setItem('admin_online', 'false');
+            localStorage.setItem('admin_last_seen', new Date().toISOString());
+            window.location.href = 'login.html';
+        }
+
+        // ========== INIT ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            initAdminStatus();
+            loadChatUsers();
+            loadUsers();
+            
+            // Set interval to check for new messages
+            setInterval(() => {
+                liveChatMessages = JSON.parse(localStorage.getItem('live_chat_messages') || '[]');
+                if (selectedUserId) {
+                    loadAdminChatMessages();
+                }
+                loadChatUsers();
+            }, 2000);
+            
+            // Logout button
+            document.getElementById('logout-admin').addEventListener('click', logout);
+        });
+    </script>
 </body>
 </html>
