@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - WhiteGpt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Devil Loading Screen */
+    .devil-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: opacity 0.5s ease;
+    }
+
+    .devil-loader.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .devil-character {
+      position: relative;
+      width: 120px;
+      height: 150px;
+      margin-bottom: 2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+
+    .devil-head {
+      position: relative;
+      width: 80px;
+      height: 80px;
+      background: #ff4444;
+      border-radius: 50%;
+      margin: 0 auto;
+      box-shadow: 0 10px 30px rgba(255, 68, 68, 0.5);
+    }
+
+    .devil-horn {
+      position: absolute;
+      top: -15px;
+      width: 20px;
+      height: 30px;
+      background: #333;
+      border-radius: 50% 50% 0 0;
+    }
+
+    .devil-horn.left { left: 10px; transform: rotate(-20deg); }
+    .devil-horn.right { right: 10px; transform: rotate(20deg); }
+
+    .devil-eye {
+      position: absolute;
+      top: 25px;
+      width: 15px;
+      height: 15px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    .devil-eye.left { left: 20px; }
+    .devil-eye.right { right: 20px; }
+
+    .devil-eye::after {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 5px;
+      height: 5px;
+      background: #333;
+      border-radius: 50%;
+    }
+
+    .devil-smile {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 30px;
+      height: 10px;
+      border-bottom: 3px solid #333;
+      border-radius: 0 0 15px 15px;
+    }
+
+    .devil-body {
+      width: 60px;
+      height: 40px;
+      background: #cc0000;
+      margin: 0 auto;
+      border-radius: 0 0 20px 20px;
+    }
+
+    .devil-arm {
+      position: absolute;
+      bottom: 40px;
+      width: 15px;
+      height: 40px;
+      background: #cc0000;
+      border-radius: 10px;
+    }
+
+    .devil-arm.left { left: -10px; transform: rotate(20deg); }
+    .devil-arm.right { right: -10px; transform: rotate(-20deg); }
+
+    .devil-tail {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      width: 15px;
+      height: 30px;
+      background: #cc0000;
+      border-radius: 50%;
+      transform: rotate(45deg);
+    }
+
+    .energy-particle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #ff4444;
+      border-radius: 50%;
+      animation: particle 2s infinite;
+    }
+
+    .energy-particle:nth-child(1) { top: 0; left: 50%; animation-delay: 0s; }
+    .energy-particle:nth-child(2) { top: 20%; right: 0; animation-delay: 0.2s; }
+    .energy-particle:nth-child(3) { bottom: 20%; left: 0; animation-delay: 0.4s; }
+    .energy-particle:nth-child(4) { bottom: 0; right: 30%; animation-delay: 0.6s; }
+    .energy-particle:nth-child(5) { top: 30%; left: 10%; animation-delay: 0.8s; }
+
+    @keyframes particle {
+      0% { transform: scale(1); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+
+    .loading-text {
+      color: white;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .loading-dots {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .loading-dots span {
+      width: 0.375rem;
+      height: 0.375rem;
+      background: white;
+      border-radius: 50%;
+      animation: loadingDots 1.4s infinite;
+    }
+
+    .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes loadingDots {
+      0%, 60%, 100% { transform: scale(1); opacity: 0.3; }
+      30% { transform: scale(1.5); opacity: 1; }
+    }
+
+    .loading-progress {
+      width: 200px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #ff4444, #ff8888);
+      animation: progress 2s infinite;
+      width: 30%;
+    }
+
+    @keyframes progress {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(400%); }
+    }
+
+    /* Particles Background */
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 50%;
+      animation: particleFloat 10s infinite linear;
+    }
+
+    .particle:nth-child(1) { top: 20%; left: 10%; animation-duration: 8s; }
+    .particle:nth-child(2) { top: 60%; left: 80%; animation-duration: 12s; }
+    .particle:nth-child(3) { top: 80%; left: 30%; animation-duration: 10s; }
+    .particle:nth-child(4) { top: 30%; left: 90%; animation-duration: 15s; }
+    .particle:nth-child(5) { top: 70%; left: 20%; animation-duration: 9s; }
+
+    @keyframes particleFloat {
+      from { transform: translateY(0) rotate(0deg); }
+      to { transform: translateY(-100vh) rotate(360deg); }
+    }
+
+    /* Login Container */
+    .login-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 400px;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.5s ease;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .logo-text {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #ff4444, #ff6666);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: 800;
+      color: white;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 20px rgba(255, 68, 68, 0.3);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #ff4444;
+      outline: none;
+      box-shadow: 0 0 0 4px rgba(255, 68, 68, 0.1);
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #ff4444, #ff6666);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 68, 68, 0.4);
+    }
+
+    button i {
+      font-size: 18px;
+    }
+
+    .error {
+      color: #ff4444;
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .error.show {
+      display: block;
+    }
+
+    .demo-credentials {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 10px;
+      font-size: 13px;
+      color: #666;
+      text-align: center;
+      border: 1px dashed #ddd;
+    }
+
+    .demo-credentials p {
+      margin: 5px 0;
+    }
+
+    .demo-credentials span {
+      color: #ff4444;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <!-- Devil Loading Screen -->
+  <div class="devil-loader" id="devil-loader">
+    <div class="devil-character">
+      <div class="devil-head">
+        <div class="devil-horn left"></div>
+        <div class="devil-horn right"></div>
+        <div class="devil-eye left"></div>
+        <div class="devil-eye right"></div>
+        <div class="devil-smile"></div>
+      </div>
+      <div class="devil-body"></div>
+      <div class="devil-arm left"></div>
+      <div class="devil-arm right"></div>
+      <div class="devil-tail"></div>
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+      <div class="energy-particle"></div>
+    </div>
+    <div class="loading-text">
+      Loading
+      <div class="loading-dots">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+    <div class="loading-progress">
+      <div class="loading-progress-bar"></div>
+    </div>
+  </div>
+
+  <!-- Animated particles -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo-text">W</div>
+      <h1>WhiteGpt Login</h1>
+      <p class="subtitle">Masuk untuk melanjutkan</p>
+
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username" required autocomplete="username"/>
+        <input type="password" id="password" placeholder="Password" required autocomplete="current-password"/>
+        <button type="submit" class="btn-ripple btn-shimmer">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Masuk</span>
+        </button>
+      </form>
+
+      <p id="errorMsg" class="error"></p>
+      
+      <div class="demo-credentials">
+        <p>Demo Akun:</p>
+        <p>Admin: <span>admin / admin123</span></p>
+        <p>User: <span>user / user123</span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Hide loading screen after page loads
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const loader = document.getElementById('devil-loader');
+        if (loader) {
+          loader.classList.add('hidden');
+        }
+      }, 1500);
+    });
+
+    // Simple user database (sementara pake ini dulu)
+    const USERS = [
+      { username: 'admin', password: 'admin123', role: 'admin' },
+      { username: 'user', password: 'user123', role: 'user' }
+    ];
+
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Loading...</span>';
+      
+      // Simulate delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Check credentials
+      const user = USERS.find(u => u.username === username && u.password === password);
+      
+      if (user) {
+        // Save user to localStorage
+        localStorage.setItem('currentUser', JSON.stringify({
+          username: user.username,
+          role: user.role
+        }));
+        localStorage.setItem('authenticated', 'true');
+        
+        // Show loader then redirect
+        const loader = document.getElementById('devil-loader');
+        if (loader) {
+          loader.classList.remove('hidden');
+        }
+        
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
+      } else {
+        errorMsg.textContent = "Username atau password salah!";
+        errorMsg.classList.add('show');
+        
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Masuk</span>';
+      }
+    });
+  </script>
+</body>
+</html>
