@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - WhiteGpt</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-content">
+      <div class="header-title">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z" fill="currentColor"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Admin Panel</h1>
+          <span class="brand-subtitle">User Management</span>
+        </div>
+      </div>
+      
+      <div class="header-controls">
+        <a href="index.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+          <span>Kembali ke AI</span>
+        </a>
+        <button id="logout-btn-admin" class="control-btn" title="Logout">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="admin-container">
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="total-users">0</h3>
+          <p>Total Users</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="total-admins">0</h3>
+          <p>Admins</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon orange">
+          <i class="fas fa-user-clock"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="expiring-soon">0</h3>
+          <p>Expiring Soon</p>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon red">
+          <i class="fas fa-user-times"></i>
+        </div>
+        <div class="stat-info">
+          <h3 id="expired-users">0</h3>
+          <p>Expired</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+      <button id="add-user-btn" class="primary-btn">
+        <i class="fas fa-plus"></i>
+        <span>Tambah User Baru</span>
+      </button>
+      <button id="refresh-btn" class="secondary-btn">
+        <i class="fas fa-sync-alt"></i>
+        <span>Refresh Data</span>
+      </button>
+    </div>
+
+    <!-- Users Table -->
+    <div class="table-container">
+      <div class="table-header">
+        <h2>Daftar User</h2>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="search-input" placeholder="Cari user...">
+        </div>
+      </div>
+      
+      <div class="table-wrapper">
+        <table id="users-table">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+              <th>Dibuat</th>
+              <th>Expiry Date</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <tr class="loading-row">
+              <td colspan="6">
+                <div class="loading-spinner">
+                  <i class="fas fa-spinner fa-spin"></i>
+                  <span>Loading users...</span>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit User Modal -->
+  <div id="user-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modal-title">Tambah User Baru</h2>
+        <button class="modal-close" id="close-modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <form id="user-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" required placeholder="Masukkan username">
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="text" id="password" required placeholder="Masukkan password">
+        </div>
+        
+        <div class="form-group">
+          <label for="role">Role</label>
+          <select id="role" required>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="expiry-date">Expiry Date (Opsional)</label>
+          <input type="datetime-local" id="expiry-date" placeholder="Pilih tanggal expiry">
+          <small>Kosongkan jika tidak ada expiry</small>
+        </div>
+        
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" id="is-active" checked>
+            <span>Account Active</span>
+          </label>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="cancel-btn" id="cancel-btn">Batal</button>
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-save"></i>
+            <span>Simpan</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-modal" class="modal">
+    <div class="modal-content small">
+      <div class="modal-header">
+        <h2>Konfirmasi Hapus</h2>
+        <button class="modal-close" id="close-delete-modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <div class="warning-icon">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <p>Apakah Anda yakin ingin menghapus user <strong id="delete-username"></strong>?</p>
+        <p class="warning-text">Tindakan ini tidak dapat dibatalkan!</p>
+      </div>
+      
+      <div class="modal-actions">
+        <button type="button" class="cancel-btn" id="cancel-delete-btn">Batal</button>
+        <button type="button" class="delete-btn" id="confirm-delete-btn">
+          <i class="fas fa-trash"></i>
+          <span>Hapus</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-message">Success!</span>
+  </div>
+
+  <script src="role-manager.js"></script>
+  <script src="auth-new.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

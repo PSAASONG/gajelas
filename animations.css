@@ -1,0 +1,655 @@
+/* ==================== DEVIL LOADING SCREEN ==================== */
+
+.devil-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.devil-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* Devil Character Container */
+.devil-character {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin-bottom: 40px;
+    animation: devilFloat 3s ease-in-out infinite;
+}
+
+@keyframes devilFloat {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-15px) rotate(5deg);
+    }
+}
+
+/* Devil Head */
+.devil-head {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+    border-radius: 50%;
+    top: 30px;
+    left: 65px;
+    box-shadow: 0 0 50px rgba(255, 255, 255, 0.4);
+    animation: headPulse 2s ease-in-out infinite;
+}
+
+@keyframes headPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Devil Horns */
+.devil-horn {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 40px solid #f5f5f5;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    animation: hornGlow 2s ease-in-out infinite;
+}
+
+.devil-horn.left {
+    top: -5px;
+    left: 15px;
+    transform: rotate(-15deg);
+}
+
+.devil-horn.right {
+    top: -5px;
+    right: 15px;
+    transform: rotate(15deg);
+}
+
+@keyframes hornGlow {
+    0%, 100% {
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+    }
+}
+
+/* Devil Eyes */
+.devil-eye {
+    position: absolute;
+    width: 16px;
+    height: 24px;
+    background: #0a0a0a;
+    border-radius: 50%;
+    top: 45px;
+    animation: eyeBlink 4s ease-in-out infinite;
+}
+
+.devil-eye.left {
+    left: 30px;
+}
+
+.devil-eye.right {
+    right: 30px;
+}
+
+@keyframes eyeBlink {
+    0%, 90%, 100% {
+        height: 24px;
+    }
+    95% {
+        height: 3px;
+    }
+}
+
+/* Eye Shine */
+.devil-eye::after {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    top: 5px;
+    left: 3px;
+}
+
+/* Evil Smile */
+.devil-smile {
+    position: absolute;
+    width: 50px;
+    height: 25px;
+    border: 4px solid #0a0a0a;
+    border-top: none;
+    border-radius: 0 0 50px 50px;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: smileWiggle 1s ease-in-out infinite;
+}
+
+@keyframes smileWiggle {
+    0%, 100% {
+        transform: translateX(-50%) scaleX(1);
+    }
+    50% {
+        transform: translateX(-50%) scaleX(1.1);
+    }
+}
+
+/* Devil Body */
+.devil-body {
+    position: absolute;
+    width: 100px;
+    height: 110px;
+    background: linear-gradient(135deg, #e0e0e0 0%, #f5f5f5 100%);
+    border-radius: 50px 50px 30px 30px;
+    bottom: 30px;
+    left: 75px;
+    box-shadow: 0 0 40px rgba(255, 255, 255, 0.3);
+}
+
+/* Devil Arms */
+.devil-arm {
+    position: absolute;
+    width: 20px;
+    height: 60px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    border-radius: 15px;
+    top: 150px;
+}
+
+.devil-arm.left {
+    left: 50px;
+    transform-origin: top center;
+    animation: armWaveLeft 1.5s ease-in-out infinite;
+}
+
+.devil-arm.right {
+    right: 50px;
+    transform-origin: top center;
+    animation: armWaveRight 1.5s ease-in-out infinite 0.75s;
+}
+
+@keyframes armWaveLeft {
+    0%, 100% {
+        transform: rotate(-30deg);
+    }
+    50% {
+        transform: rotate(-50deg);
+    }
+}
+
+@keyframes armWaveRight {
+    0%, 100% {
+        transform: rotate(30deg);
+    }
+    50% {
+        transform: rotate(50deg);
+    }
+}
+
+/* Devil Tail */
+.devil-tail {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    border: 8px solid #f5f5f5;
+    border-radius: 50%;
+    border-top: none;
+    border-left: none;
+    bottom: 20px;
+    right: -20px;
+    transform: rotate(-45deg);
+    animation: tailSwing 2s ease-in-out infinite;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+@keyframes tailSwing {
+    0%, 100% {
+        transform: rotate(-45deg);
+    }
+    50% {
+        transform: rotate(-60deg);
+    }
+}
+
+/* Tail Arrow */
+.devil-tail::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 25px solid #f5f5f5;
+    bottom: -25px;
+    right: -5px;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+}
+
+/* Energy Particles Around Devil */
+.energy-particle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, #ffffff, #f5f5f5);
+    border-radius: 50%;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+    animation: particleOrbit 3s ease-in-out infinite;
+}
+
+.energy-particle:nth-child(1) {
+    top: 20%;
+    left: 5%;
+    animation-delay: 0s;
+}
+
+.energy-particle:nth-child(2) {
+    top: 40%;
+    left: 10%;
+    animation-delay: 0.6s;
+}
+
+.energy-particle:nth-child(3) {
+    top: 30%;
+    right: 10%;
+    animation-delay: 1.2s;
+}
+
+.energy-particle:nth-child(4) {
+    bottom: 25%;
+    left: 8%;
+    animation-delay: 1.8s;
+}
+
+.energy-particle:nth-child(5) {
+    bottom: 35%;
+    right: 12%;
+    animation-delay: 2.4s;
+}
+
+@keyframes particleOrbit {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.4;
+    }
+    50% {
+        transform: translateY(-40px) scale(1.5);
+        opacity: 1;
+    }
+}
+
+/* Loading Text */
+.loading-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-top: 30px;
+    animation: textGlow 2s ease-in-out infinite;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+}
+
+@keyframes textGlow {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.loading-dots {
+    display: inline-flex;
+    gap: 8px;
+    margin-left: 8px;
+}
+
+.loading-dots span {
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+    border-radius: 50%;
+    animation: dotJump 1.4s infinite both;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+.loading-dots span:nth-child(3) { animation-delay: 0s; }
+
+@keyframes dotJump {
+    0%, 80%, 100% {
+        transform: scale(0) translateY(0);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1.2) translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* Loading Progress Bar */
+.loading-progress {
+    width: 350px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    margin-top: 40px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.loading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #f5f5f5 0%, #ffffff 50%, #f5f5f5 100%);
+    background-size: 200% 100%;
+    border-radius: 3px;
+    animation: progressFlow 2s ease-in-out infinite;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.7);
+}
+
+@keyframes progressFlow {
+    0% {
+        transform: translateX(-100%);
+        background-position: 0% 50%;
+    }
+    100% {
+        transform: translateX(100%);
+        background-position: 100% 50%;
+    }
+}
+
+/* ==================== SMOOTH BUTTON ANIMATIONS ==================== */
+
+/* Ripple Effect */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-ripple:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Glow Pulse Animation */
+.btn-glow {
+    position: relative;
+    animation: buttonGlowPulse 2s ease-in-out infinite;
+}
+
+@keyframes buttonGlowPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(255, 255, 255, 0.6);
+    }
+}
+
+/* Shimmer Effect */
+.btn-shimmer {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.7s ease;
+}
+
+.btn-shimmer:hover::after {
+    left: 100%;
+}
+
+/* Scale Bounce */
+.btn-bounce:hover {
+    animation: buttonBounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes buttonBounce {
+    0%, 100% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(0.95);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    75% {
+        transform: scale(0.98);
+    }
+}
+
+/* Slide Up Effect */
+.btn-slide {
+    position: relative;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-slide::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background: rgba(255, 255, 255, 0.1);
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: -1;
+}
+
+.btn-slide:hover::before {
+    height: 100%;
+}
+
+.btn-slide:hover {
+    transform: translateY(-3px);
+}
+
+/* Icon Animations */
+.icon-spin {
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.icon-spin:hover {
+    transform: rotate(360deg);
+}
+
+.icon-bounce {
+    animation: iconFloat 2s ease-in-out infinite;
+}
+
+@keyframes iconFloat {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Gradient Animation */
+.gradient-animate {
+    background-size: 200% 200%;
+    animation: gradientMove 3s ease infinite;
+}
+
+@keyframes gradientMove {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Fade In Animations */
+.fade-in {
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-down {
+    animation: fadeInDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Slide In Animations */
+.slide-in-left {
+    animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.slide-in-right {
+    animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Scale In Animation */
+.scale-in {
+    animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .devil-character {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .devil-head {
+        width: 100px;
+        height: 100px;
+        left: 50px;
+    }
+    
+    .devil-body {
+        width: 80px;
+        height: 90px;
+        left: 60px;
+    }
+    
+    .loading-progress {
+        width: 280px;
+    }
+    
+    .loading-text {
+        font-size: 1.4rem;
+    }
+}
