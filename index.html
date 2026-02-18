@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS Files -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -45,19 +45,18 @@
             <span>New Chat</span>
         </button>
 
-        <!-- LIVE CHAT SECTION (DI BAWAH NEW CHAT) -->
+        <!-- LIVE CHAT SECTION -->
         <div class="live-chat-section">
             <div class="live-chat-header">
-                <h4>Live Chat dengan Admin</h4>
+                <h4>Live Chat Support</h4>
                 <div class="admin-status" id="admin-status-header">
                     <span class="status-dot"></span>
-                    <span id="admin-status-text">Online</span>
+                    <span id="admin-status-text">Offline</span>
                 </div>
             </div>
             <div id="live-chat-list" class="live-chat-list">
-                <!-- Chat dengan admin akan muncul di sini -->
                 <div class="chat-user-item" onclick="openLiveChat()">
-                    <div class="chat-user-avatar online">
+                    <div class="chat-user-avatar">
                         <i class="fas fa-headset"></i>
                     </div>
                     <div class="chat-user-info">
@@ -69,7 +68,7 @@
                             <span class="message-status">
                                 <i class="fas fa-check"></i>
                             </span>
-                            <span>Klik untuk chat dengan admin</span>
+                            <span id="last-message-text">Klik untuk chat dengan admin</span>
                         </div>
                     </div>
                     <div class="chat-time" id="last-seen-time"></div>
@@ -77,7 +76,7 @@
             </div>
         </div>
 
-        <!-- RECENT CHATS SECTION -->
+        <!-- RECENT CHATS -->
         <div class="sidebar-section">
             <div class="sidebar-label">
                 Recent Chats
@@ -85,22 +84,20 @@
                     <i class="fas fa-trash-alt"></i>
                 </button>
             </div>
-            <div id="recent-chats" class="recent-chats-list">
-                <!-- Recent chats akan muncul di sini -->
-            </div>
+            <div id="recent-chats" class="recent-chats-list"></div>
         </div>
 
-        <!-- LOGOUT BUTTON -->
+        <!-- LOGOUT -->
         <button id="logout-sidebar" class="logout-btn-sidebar">
             <i class="fas fa-sign-out-alt"></i>
             <span>Logout</span>
         </button>
     </aside>
 
-    <!-- SIDEBAR OVERLAY -->
+    <!-- OVERLAY -->
     <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
-    <!-- DEVIL LOADER -->
+    <!-- LOADER -->
     <div class="devil-loader" id="devil-loader">
         <div class="devil-character">
             <div class="devil-head">
@@ -154,7 +151,7 @@
                         <span>Online</span>
                     </div>
                     
-                    <!-- DROPDOWN MENU -->
+                    <!-- DROPDOWN -->
                     <div class="dropdown">
                         <button id="menu-btn" class="control-btn" title="Menu">
                             <i class="fas fa-ellipsis-v"></i>
@@ -215,7 +212,7 @@
                 <h2>Selamat datang di WhiteGpt</h2>
                 <p>AI Assistant yang siap membantu Anda dengan berbagai tugas</p>
                 
-                <!-- API KEY GENERATOR DEMO -->
+                <!-- API KEY GENERATOR -->
                 <div class="api-key-demo">
                     <div class="api-key-header">
                         <i class="fas fa-key"></i>
@@ -278,7 +275,7 @@
             <div class="input-wrapper">
                 <!-- LEFT BUTTONS -->
                 <div class="input-controls-left">
-                    <input type="file" id="file-input" accept=".txt,.js,.py,.html,.css,.json,.md,.java,.cpp,.c,.php,.rb,.go,.rs,.ts,.jsx,.tsx,.vue,.xml,.yaml,.yml,.sh,.bat" style="display: none;">
+                    <input type="file" id="file-input" accept=".txt,.js,.py,.html,.css,.json,.md" style="display: none;">
                     <button id="file-button" class="input-icon-btn" title="Upload File">
                         <i class="fas fa-paperclip"></i>
                     </button>
@@ -316,7 +313,7 @@
                     <h5>Admin Support</h5>
                     <div class="admin-status" id="modal-admin-status">
                         <span class="status-dot"></span>
-                        <span id="modal-status-text">Online</span>
+                        <span id="modal-status-text">Offline</span>
                     </div>
                 </div>
             </div>
@@ -325,9 +322,7 @@
             </button>
         </div>
 
-        <div id="live-chat-messages" class="live-chat-messages">
-            <!-- Messages akan muncul di sini -->
-        </div>
+        <div id="live-chat-messages" class="live-chat-messages"></div>
 
         <div class="live-chat-input-area">
             <div id="chat-image-preview" class="image-preview" style="display: none;"></div>
@@ -351,6 +346,17 @@
     <input type="file" id="photo-input" accept="image/*" style="display: none;">
 
     <script>
+        // ========== CONFIG ==========
+        const CONFIG = {
+            APP_NAME: 'WhiteGpt',
+            MODEL_NAME: 'gemini-2.5-flash-preview-09-2025',
+            API_KEYS: [
+                "AIzaSyAFF-nysYSrepg_Aor9ZGXCb-RkIAnhQM0",
+                "AIzaSyDGN5GzGVT8jGMmH3qj2DbZyJyzmWYuQiU"
+            ],
+            SYSTEM_PROMPT: `Kamu adalah WhiteGPT, asisten AI yang membantu dan ramah.`
+        };
+
         // ========== API KEY GENERATOR ==========
         function generateApiKey() {
             const random = Math.random().toString(36).substring(2, 20);
@@ -360,137 +366,29 @@
         function generateNewApiKey() {
             const newKey = generateApiKey();
             document.getElementById('api-key-display').textContent = newKey;
-            
-            // Tampilkan sebagai code block
-            const codeExample = `function generateApiKey() {
-    const random = Math.random().toString(36).substring(2, 20);
-    return "wg-" + random;
-}
-
-// Generated API Key:
-const apiKey = "${newKey}";
-console.log(apiKey);`;
-
-            // Tambah ke chat window sebagai demo
-            addMessageWithCode(codeExample, 'javascript', 'ai');
         }
 
         function copyApiKey() {
             const apiKey = document.getElementById('api-key-display').textContent;
             navigator.clipboard.writeText(apiKey).then(() => {
-                const btn = event.currentTarget;
-                const original = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i>';
-                btn.classList.add('copied');
-                setTimeout(() => {
-                    btn.innerHTML = original;
-                    btn.classList.remove('copied');
-                }, 2000);
+                alert('API Key copied!');
             });
         }
 
-        // ========== CODE BLOCK FORMATTER ==========
-        function formatCodeBlock(text) {
-            // Deteksi code block dengan ``` 
-            const codeBlockRegex = /```(\w*)\n?([\s\S]*?)```/g;
-            
-            return text.replace(codeBlockRegex, (match, language, code) => {
-                const lang = language || 'code';
-                const escapedCode = code.trim()
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;');
-                
-                return `
-                    <div class="code-block-container">
-                        <div class="code-block-header">
-                            <div class="code-block-language">
-                                <i class="fas fa-code"></i>
-                                <span>${lang}</span>
-                            </div>
-                            <div class="code-block-actions">
-                                <button class="code-block-btn" onclick="copyCode(this)" title="Copy Code">
-                                    <i class="fas fa-copy"></i>
-                                </button>
-                                <button class="code-block-btn" onclick="downloadCode(this)" title="Download">
-                                    <i class="fas fa-download"></i>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="code-block-content">
-                            <pre><code>${escapedCode}</code></pre>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        window.copyCode = function(button) {
-            const codeBlock = button.closest('.code-block-container');
-            const code = codeBlock.querySelector('code').textContent;
-            
-            navigator.clipboard.writeText(code).then(() => {
-                button.innerHTML = '<i class="fas fa-check"></i>';
-                button.classList.add('copied');
-                
-                setTimeout(() => {
-                    button.innerHTML = '<i class="fas fa-copy"></i>';
-                    button.classList.remove('copied');
-                }, 2000);
-            });
-        };
-
-        window.downloadCode = function(button) {
-            const codeBlock = button.closest('.code-block-container');
-            const code = codeBlock.querySelector('code').textContent;
-            const lang = codeBlock.querySelector('.code-block-language span').textContent;
-            
-            const blob = new Blob([code], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `code.${lang}`;
-            a.click();
-            URL.revokeObjectURL(url);
-            
-            button.innerHTML = '<i class="fas fa-check"></i>';
-            setTimeout(() => {
-                button.innerHTML = '<i class="fas fa-download"></i>';
-            }, 2000);
-        };
-
-        // Override addMessage function to include code formatting
-        const originalAddMessage = addMessage;
-        window.addMessage = function(content, sender) {
-            const formattedContent = formatCodeBlock(content);
-            
-            const chatWindow = document.getElementById('chat-window');
-            const welcome = document.getElementById('welcome-screen');
-            if (welcome) welcome.style.display = 'none';
-            
-            const container = document.createElement('div');
-            container.className = 'message-container';
-            
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
-            messageDiv.innerHTML = formattedContent;
-            
-            container.appendChild(messageDiv);
-            chatWindow.appendChild(container);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-            
-            return container;
-        };
-
-        function addMessageWithCode(code, language, sender) {
-            const content = '```' + language + '\n' + code + '\n```';
-            addMessage(content, sender);
-        }
-
-        // ========== LIVE CHAT SYSTEM ==========
+        // ========== LIVE CHAT SYSTEM (GITHUB PAGES VERSION) ==========
         let liveChatMessages = JSON.parse(localStorage.getItem('live_chat_messages') || '[]');
         let adminOnline = localStorage.getItem('admin_online') === 'true';
         let adminLastSeen = localStorage.getItem('admin_last_seen') || new Date().toISOString();
+
+        // Update admin status every 5 seconds
+        setInterval(() => {
+            const lastActivity = localStorage.getItem('admin_last_activity');
+            if (lastActivity) {
+                const diff = Date.now() - parseInt(lastActivity);
+                adminOnline = diff < 30000; // 30 detik
+                updateAdminStatus();
+            }
+        }, 5000);
 
         function updateAdminStatus() {
             const statusHeader = document.getElementById('admin-status-header');
@@ -516,14 +414,9 @@ console.log(apiKey);`;
                 const diffMs = now - lastSeen;
                 const diffMins = Math.floor(diffMs / 60000);
                 
-                if (diffMins < 1) {
-                    lastSeenTime.textContent = 'Just now';
-                } else if (diffMins < 60) {
-                    lastSeenTime.textContent = `${diffMins}m ago`;
-                } else {
-                    const diffHours = Math.floor(diffMins / 60);
-                    lastSeenTime.textContent = `${diffHours}h ago`;
-                }
+                if (diffMins < 1) lastSeenTime.textContent = 'Just now';
+                else if (diffMins < 60) lastSeenTime.textContent = `${diffMins}m ago`;
+                else lastSeenTime.textContent = `${Math.floor(diffMins/60)}h ago`;
             }
         }
 
@@ -535,6 +428,7 @@ console.log(apiKey);`;
             liveChatMessages.forEach(msg => {
                 const messageDiv = document.createElement('div');
                 messageDiv.className = `chat-message ${msg.sender}`;
+                messageDiv.id = `msg-${msg.id}`;
                 
                 if (msg.type === 'image') {
                     messageDiv.innerHTML = `
@@ -551,7 +445,7 @@ console.log(apiKey);`;
                         ${msg.content}
                         <div class="message-footer">
                             <span class="message-time">${new Date(msg.timestamp).toLocaleTimeString()}</span>
-                            <span class="message-status-icons">
+                            <span class="message-status-icons" id="status-${msg.id}">
                                 ${msg.read ? '<i class="fas fa-check-double read"></i>' : '<i class="fas fa-check"></i>'}
                             </span>
                         </div>
@@ -565,6 +459,8 @@ console.log(apiKey);`;
             // Update unread count
             const unreadCount = liveChatMessages.filter(m => !m.read && m.sender === 'admin').length;
             document.getElementById('unread-count').textContent = unreadCount;
+            document.getElementById('last-message-text').textContent = 
+                liveChatMessages.length > 0 ? liveChatMessages[liveChatMessages.length-1].content : 'Klik untuk chat dengan admin';
         }
 
         window.openLiveChat = function() {
@@ -572,7 +468,9 @@ console.log(apiKey);`;
             
             // Mark admin messages as read
             liveChatMessages.forEach(msg => {
-                if (msg.sender === 'admin') msg.read = true;
+                if (msg.sender === 'admin' && !msg.read) {
+                    msg.read = true;
+                }
             });
             localStorage.setItem('live_chat_messages', JSON.stringify(liveChatMessages));
             
@@ -599,14 +497,12 @@ console.log(apiKey);`;
                 
                 liveChatMessages.push(message);
                 localStorage.setItem('live_chat_messages', JSON.stringify(liveChatMessages));
-                
-                // Simpan ke log file (simulasi)
                 saveToLogFile(message);
                 
                 input.value = '';
                 loadLiveChatMessages();
                 
-                // Auto reply dari admin (demo)
+                // Auto reply from admin (demo)
                 setTimeout(() => {
                     const adminReply = {
                         id: Date.now() + 1,
@@ -620,9 +516,19 @@ console.log(apiKey);`;
                     localStorage.setItem('live_chat_messages', JSON.stringify(liveChatMessages));
                     saveToLogFile(adminReply);
                     loadLiveChatMessages();
+                    
+                    // Update unread count
+                    document.getElementById('unread-count').textContent = 
+                        liveChatMessages.filter(m => !m.read && m.sender === 'admin').length;
                 }, 1000);
             }
         };
+
+        function saveToLogFile(message) {
+            const logs = JSON.parse(localStorage.getItem('chat_logs') || '[]');
+            logs.push(message);
+            localStorage.setItem('chat_logs', JSON.stringify(logs));
+        }
 
         // Image upload for chat
         document.getElementById('chat-image-input').addEventListener('change', function(e) {
@@ -648,7 +554,7 @@ console.log(apiKey);`;
             }
         });
 
-        // Voice note for chat
+        // Voice note
         document.getElementById('voice-chat-btn').addEventListener('click', function() {
             if (!('webkitSpeechRecognition' in window)) {
                 alert('Browser tidak mendukung voice note');
@@ -675,13 +581,75 @@ console.log(apiKey);`;
             };
         });
 
-        function saveToLogFile(message) {
-            const logEntry = `[${message.timestamp}] ${message.sender}: ${message.content} (${message.read ? 'read' : 'sent'})\n`;
-            const existingLogs = localStorage.getItem('chat_log') || '';
-            localStorage.setItem('chat_log', existingLogs + logEntry);
+        // ========== CODE BLOCK ==========
+        function formatCodeBlock(text) {
+            const codeBlockRegex = /```(\w*)\n?([\s\S]*?)```/g;
+            return text.replace(codeBlockRegex, (match, language, code) => {
+                const lang = language || 'code';
+                const escapedCode = code.trim()
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                
+                return `
+                    <div class="code-block-container">
+                        <div class="code-block-header">
+                            <div class="code-block-language">
+                                <i class="fas fa-code"></i>
+                                <span>${lang}</span>
+                            </div>
+                            <div class="code-block-actions">
+                                <button class="code-block-btn" onclick="copyCode(this)" title="Copy Code">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="code-block-content">
+                            <pre><code>${escapedCode}</code></pre>
+                        </div>
+                    </div>
+                `;
+            });
         }
 
-        // ========== RECENT CHATS DELETE FUNCTION ==========
+        window.copyCode = function(button) {
+            const codeBlock = button.closest('.code-block-container');
+            const code = codeBlock.querySelector('code').textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                button.innerHTML = '<i class="fas fa-check"></i>';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.innerHTML = '<i class="fas fa-copy"></i>';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        };
+
+        // Override addMessage
+        window.addMessage = function(content, sender) {
+            const formattedContent = formatCodeBlock(content);
+            
+            const chatWindow = document.getElementById('chat-window');
+            const welcome = document.getElementById('welcome-screen');
+            if (welcome) welcome.style.display = 'none';
+            
+            const container = document.createElement('div');
+            container.className = 'message-container';
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
+            messageDiv.innerHTML = formattedContent;
+            
+            container.appendChild(messageDiv);
+            chatWindow.appendChild(container);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+            
+            return container;
+        };
+
+        // ========== RECENT CHATS ==========
         function loadRecentChats() {
             const container = document.getElementById('recent-chats');
             const chats = JSON.parse(localStorage.getItem('chatHistories') || '[]');
@@ -702,11 +670,6 @@ console.log(apiKey);`;
                         <i class="fas fa-times"></i>
                     </button>
                 `;
-                item.addEventListener('click', function(e) {
-                    if (!e.target.closest('.delete-chat-btn')) {
-                        loadChat(chat.id);
-                    }
-                });
                 container.appendChild(item);
             });
         }
@@ -724,42 +687,26 @@ console.log(apiKey);`;
         document.getElementById('clear-all-chats')?.addEventListener('click', function() {
             if (confirm('Hapus semua riwayat chat?')) {
                 localStorage.removeItem('chatHistories');
-                localStorage.removeItem('currentChatId');
                 loadRecentChats();
-                newChat();
+                location.reload();
             }
         });
 
-        // ========== CHECK ADMIN STATUS ==========
-        setInterval(() => {
-            // Simulasi check admin status
-            const lastActivity = localStorage.getItem('admin_last_activity');
-            if (lastActivity) {
-                const diff = Date.now() - parseInt(lastActivity);
-                adminOnline = diff < 300000; // 5 menit
-                if (!adminOnline) {
-                    adminLastSeen = lastActivity;
-                }
-            }
-            updateAdminStatus();
-        }, 5000);
-
-        // ========== INITIALIZATION ==========
+        // ========== INIT ==========
         document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('app-header').textContent = CONFIG.APP_NAME;
+            document.getElementById('api-key-display').textContent = generateApiKey();
+            
             loadRecentChats();
             loadLiveChatMessages();
             updateAdminStatus();
             
-            // Generate initial API key
-            document.getElementById('api-key-display').textContent = generateApiKey();
-            
-            // Hide loader
             setTimeout(() => {
                 document.getElementById('devil-loader').classList.add('hidden');
             }, 1500);
         });
 
-        // ========== SIDEBAR TOGGLE ==========
+        // Toggle sidebar
         document.getElementById('toggle-sidebar').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('visible');
             document.getElementById('sidebar-overlay').classList.toggle('visible');
@@ -773,6 +720,17 @@ console.log(apiKey);`;
         document.getElementById('sidebar-overlay').addEventListener('click', function() {
             document.getElementById('sidebar').classList.remove('visible');
             this.classList.remove('visible');
+        });
+
+        // Logout
+        document.getElementById('logout-sidebar').addEventListener('click', function() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            localStorage.clear();
+            window.location.href = 'login.html';
         });
     </script>
 </body>
