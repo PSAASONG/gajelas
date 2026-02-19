@@ -10,8 +10,196 @@
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- CSS External -->
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* PROFILE PICTURES */
+        .message-container {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            margin: 12px 0;
+            animation: messageSlide 0.3s ease;
+        }
+
+        .message-container.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .user-avatar {
+            background: linear-gradient(135deg, #ff4444, #ff6666);
+            color: white;
+        }
+
+        .ai-avatar {
+            background: linear-gradient(135deg, #4a4a4a, #2d2d2d);
+            color: #ff4444;
+            border: 1px solid rgba(255,68,68,0.3);
+        }
+
+        .message-wrapper {
+            max-width: 70%;
+        }
+
+        .message {
+            padding: 10px 14px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        .user-message {
+            background: linear-gradient(135deg, #ff4444, #ff6666);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai-message {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            border-bottom-left-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        /* THINKING ROBOT */
+        .thinking-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .thinking-robot {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: var(--bg-card);
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            animation: robotPulse 1.5s ease infinite;
+        }
+
+        .robot-icon {
+            font-size: 20px;
+            color: var(--accent-primary);
+            animation: robotThink 1s ease infinite;
+        }
+
+        @keyframes robotThink {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(10deg) scale(1.1); }
+            75% { transform: rotate(-10deg) scale(1.1); }
+        }
+
+        .robot-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .robot-dots span {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            animation: robotBounce 1.4s infinite ease-in-out;
+        }
+
+        .robot-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .robot-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes robotBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .robot-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        @keyframes robotPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,68,68,0.2); }
+            50% { box-shadow: 0 0 15px rgba(255,68,68,0.4); }
+        }
+
+        .thinking-completed {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(76, 175, 80, 0.1);
+            border-radius: 20px;
+            margin: 5px 0;
+            color: var(--success);
+            font-size: 11px;
+            max-width: fit-content;
+            border: 1px solid rgba(76,175,80,0.2);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .thinking-completed i {
+            font-size: 12px;
+        }
+
+        /* KEYBOARD FIX */
+        .input-area {
+            position: sticky;
+            bottom: 0;
+            padding: 15px 20px;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .input-area.keyboard-open {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                animation: slideUp 0.3s ease;
+            }
+            
+            .chat-window {
+                padding-bottom: 80px;
+            }
+            
+            .chat-window.keyboard-open {
+                max-height: calc(100vh - 300px);
+                overflow-y: auto;
+            }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
 </head>
 <body>
     <!-- SIDEBAR -->
@@ -190,9 +378,7 @@
         </header>
 
         <!-- HISTORY PANEL -->
-        <div id="history-panel" class="history-panel" style="display: none;">
-            <!-- History content will be loaded here -->
-        </div>
+        <div id="history-panel" class="history-panel" style="display: none;"></div>
 
         <!-- CHAT WINDOW -->
         <div id="chat-window" class="chat-window">
@@ -346,6 +532,17 @@
             ]
         };
 
+        // ========== CEK LOGIN ==========
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+        if (!currentUser.username) {
+            window.location.href = 'login.html';
+        }
+
+        // Tampilkan admin panel button jika user admin
+        if (currentUser.role === 'admin') {
+            document.getElementById('admin-panel-btn').style.display = 'flex';
+        }
+
         // ========== STATE ==========
         let messages = [];
         let currentApiKey = CONFIG.API_KEYS[0];
@@ -382,13 +579,40 @@
             if (welcome) welcome.style.display = 'none';
             
             const container = document.createElement('div');
-            container.className = 'message-container';
+            container.className = `message-container ${sender}`;
+            
+            // Avatar
+            const avatar = document.createElement('div');
+            avatar.className = `message-avatar ${sender === 'user' ? 'user-avatar' : 'ai-avatar'}`;
+            avatar.innerHTML = sender === 'user' ? '<i class="fas fa-user"></i>' : '<i class="fas fa-robot"></i>';
+            
+            // Message wrapper
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper';
             
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
-            messageDiv.innerHTML = content;
             
-            container.appendChild(messageDiv);
+            // Format content
+            let formattedContent = content.replace(/\n/g, '<br>');
+            messageDiv.innerHTML = formattedContent;
+            
+            // Time
+            const time = document.createElement('div');
+            time.className = 'message-time';
+            time.textContent = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            
+            wrapper.appendChild(messageDiv);
+            wrapper.appendChild(time);
+            
+            if (sender === 'user') {
+                container.appendChild(wrapper);
+                container.appendChild(avatar);
+            } else {
+                container.appendChild(avatar);
+                container.appendChild(wrapper);
+            }
+            
             chatWindow.appendChild(container);
             chatWindow.scrollTop = chatWindow.scrollHeight;
             
@@ -396,9 +620,21 @@
         }
 
         function showThinking() {
+            const chatWindow = document.getElementById('chat-window');
+            
+            const container = document.createElement('div');
+            container.className = 'message-container ai';
+            container.id = 'thinking-container';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar ai-avatar';
+            avatar.innerHTML = '<i class="fas fa-robot"></i>';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper';
+            
             const thinkingDiv = document.createElement('div');
             thinkingDiv.className = 'thinking-robot';
-            thinkingDiv.id = 'thinking-robot';
             thinkingDiv.innerHTML = `
                 <div class="robot-icon">🤖</div>
                 <div class="robot-dots">
@@ -408,28 +644,46 @@
                 </div>
                 <span class="robot-label">THINKING</span>
             `;
-            document.getElementById('chat-window').appendChild(thinkingDiv);
-            document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
+            
+            wrapper.appendChild(thinkingDiv);
+            container.appendChild(avatar);
+            container.appendChild(wrapper);
+            
+            chatWindow.appendChild(container);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
         function hideThinking() {
-            const thinking = document.getElementById('thinking-robot');
+            const thinking = document.getElementById('thinking-container');
             if (thinking) thinking.remove();
         }
 
         function showThinkingCompleted() {
+            const chatWindow = document.getElementById('chat-window');
+            
+            const container = document.createElement('div');
+            container.className = 'message-container ai';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar ai-avatar';
+            avatar.innerHTML = '<i class="fas fa-robot"></i>';
+            
+            const wrapper = document.createElement('div');
+            wrapper.className = 'message-wrapper';
+            
             const completed = document.createElement('div');
             completed.className = 'thinking-completed';
             completed.innerHTML = `
                 <i class="fas fa-check-circle"></i>
                 <span>Thinking completed</span>
             `;
-            document.getElementById('chat-window').appendChild(completed);
-            document.getElementById('chat-window').scrollTop = document.getElementById('chat-window').scrollHeight;
             
-            setTimeout(() => {
-                if (completed.parentNode) completed.remove();
-            }, 2000);
+            wrapper.appendChild(completed);
+            container.appendChild(avatar);
+            container.appendChild(wrapper);
+            
+            chatWindow.appendChild(container);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
         // ========== SEND MESSAGE ==========
@@ -443,6 +697,7 @@
             
             addMessage(text, 'user');
             input.value = '';
+            input.style.height = 'auto';
             
             isProcessing = true;
             document.getElementById('send-button').disabled = true;
@@ -454,14 +709,16 @@
                 hideThinking();
                 showThinkingCompleted();
                 
-                const responses = [
-                    "Halo! Ada yang bisa saya bantu? 😊",
-                    "Baik, saya mengerti pertanyaan Anda.",
-                    "Mohon tunggu sebentar...",
-                    "Terima kasih atas pertanyaannya."
-                ];
-                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-                addMessage(randomResponse, 'ai');
+                setTimeout(() => {
+                    const responses = [
+                        "Halo! Ada yang bisa saya bantu? 😊",
+                        "Baik, saya mengerti pertanyaan Anda.",
+                        "Mohon tunggu sebentar...",
+                        "Terima kasih atas pertanyaannya."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    addMessage(randomResponse, 'ai');
+                }, 500);
                 
                 isProcessing = false;
                 document.getElementById('send-button').disabled = false;
@@ -487,7 +744,16 @@
                 if (statusModal) statusModal.className = 'admin-status offline';
                 statusText.textContent = 'Offline';
                 if (modalStatusText) modalStatusText.textContent = 'Offline';
-                lastSeenTime.textContent = 'Offline';
+                
+                const lastSeen = localStorage.getItem('admin_last_seen');
+                if (lastSeen) {
+                    const date = new Date(parseInt(lastSeen));
+                    const now = new Date();
+                    const diff = Math.floor((now - date) / 60000);
+                    if (diff < 1) lastSeenTime.textContent = 'Just now';
+                    else if (diff < 60) lastSeenTime.textContent = `${diff}m ago`;
+                    else lastSeenTime.textContent = `${Math.floor(diff/60)}h ago`;
+                }
             }
         }
 
@@ -540,7 +806,6 @@
         window.openLiveChat = function() {
             document.getElementById('live-chat-modal').classList.add('active');
             
-            // Mark messages as read
             liveChatMessages.forEach(msg => {
                 if (msg.sender === 'admin' && !msg.read) {
                     msg.read = true;
@@ -576,7 +841,6 @@
             input.value = '';
             loadLiveChatMessages();
             
-            // Simulate admin reply
             setTimeout(() => {
                 const adminReply = {
                     id: Date.now() + 1,
@@ -669,9 +933,8 @@
             
             const reader = new FileReader();
             reader.onload = function(e) {
-                addMessage(`📷 Mengirim gambar...`, 'user');
+                addMessage(`📷 <img src="${e.target.result}" style="max-width:200px; border-radius:8px;">`, 'user');
                 
-                // Simulate sending image
                 setTimeout(() => {
                     addMessage(`Gambar diterima! Terima kasih.`, 'ai');
                 }, 1500);
@@ -704,6 +967,10 @@
             document.getElementById('chat-window').innerHTML = '';
             document.getElementById('welcome-screen').style.display = 'block';
             document.getElementById('dropdown-menu').classList.remove('show');
+        });
+
+        document.getElementById('admin-panel-btn').addEventListener('click', function() {
+            window.location.href = 'admin.html';
         });
 
         document.getElementById('logout-btn').addEventListener('click', function() {
@@ -740,28 +1007,101 @@
         // ========== SEND BUTTON ==========
         document.getElementById('send-button').addEventListener('click', sendMessage);
 
-        document.getElementById('chat-input').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
+        // ========== KEYBOARD FIX ==========
+        const chatInput = document.getElementById('chat-input');
+        const inputArea = document.querySelector('.input-area');
+        const chatWindow = document.getElementById('chat-window');
 
-        // Auto-resize textarea
-        document.getElementById('chat-input').addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        if (chatInput) {
+            chatInput.addEventListener('focus', function() {
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        inputArea.classList.add('keyboard-open');
+                        chatWindow.classList.add('keyboard-open');
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                    }, 300);
+                }
+            });
+
+            chatInput.addEventListener('blur', function() {
+                if (window.innerWidth <= 768) {
+                    inputArea.classList.remove('keyboard-open');
+                    chatWindow.classList.remove('keyboard-open');
+                }
+            });
+
+            chatInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                    
+                    if (window.innerWidth <= 768) {
+                        setTimeout(() => {
+                            inputArea.classList.remove('keyboard-open');
+                            chatWindow.classList.remove('keyboard-open');
+                        }, 100);
+                    }
+                }
+            });
+
+            chatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+        }
+
+        // ========== RECENT CHATS ==========
+        function loadRecentChats() {
+            const container = document.getElementById('recent-chats');
+            const chats = JSON.parse(localStorage.getItem('chatHistories') || '[]');
+            
+            if (chats.length === 0) {
+                container.innerHTML = '<div class="no-chats">No chats yet</div>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            chats.slice(0, 10).forEach((chat, index) => {
+                const item = document.createElement('div');
+                item.className = 'chat-item';
+                item.innerHTML = `
+                    <i class="fas fa-comment"></i>
+                    <span class="chat-title">${chat.title || 'New Chat'}</span>
+                    <button class="delete-chat-btn" onclick="deleteChat(${index})" title="Hapus chat">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        window.deleteChat = function(index) {
+            if (confirm('Hapus chat ini?')) {
+                const chats = JSON.parse(localStorage.getItem('chatHistories') || '[]');
+                chats.splice(index, 1);
+                localStorage.setItem('chatHistories', JSON.stringify(chats));
+                loadRecentChats();
+            }
+        };
+
+        document.getElementById('clear-all-chats')?.addEventListener('click', function() {
+            if (confirm('Hapus semua riwayat chat?')) {
+                localStorage.removeItem('chatHistories');
+                loadRecentChats();
+                location.reload();
+            }
         });
 
         // ========== INIT ==========
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('app-header').textContent = CONFIG.APP_NAME;
             document.getElementById('api-key-display').textContent = generateApiKey();
+            document.getElementById('sidebar-username').textContent = currentUser.username || 'Guest User';
             
             updateAdminStatus();
             loadLiveChatMessages();
+            loadRecentChats();
             
-            // Check admin status every 5 seconds
             setInterval(() => {
                 const newStatus = localStorage.getItem('admin_online') === 'true';
                 if (newStatus !== adminOnline) {
