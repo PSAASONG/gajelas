@@ -4,19 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - WhiteGpt</title>
+    <!-- Fonts & Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
             --bg-dark: #0f0f0f;
             --bg-sidebar: #1a1a1a;
             --bg-card: #2d2d2d;
             --border: #404040;
             --accent: #ff4444;
+            --accent-hover: #ff6666;
             --text: #fff;
             --text-muted: #888;
+            --success: #4caf50;
+            --danger: #f44336;
+            --warning: #ff9800;
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 70px;
+            --transition: 0.3s ease;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background: var(--bg-dark);
@@ -25,33 +39,85 @@
             height: 100vh;
             overflow: hidden;
         }
-        /* SIDEBAR */
+
+        /* ===== SIDEBAR ===== */
         .admin-sidebar {
-            width: 260px;
+            width: var(--sidebar-width);
             background: var(--bg-sidebar);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             height: 100vh;
+            transition: width var(--transition);
+            overflow: hidden;
         }
+
+        .admin-sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
         .sidebar-header {
             padding: 20px;
-            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
         }
-        .sidebar-header i {
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            white-space: nowrap;
+        }
+
+        .sidebar-brand i {
             font-size: 24px;
             color: var(--accent);
         }
-        .sidebar-header h2 {
+
+        .sidebar-brand span {
             font-size: 18px;
+            font-weight: 700;
+            transition: opacity var(--transition);
         }
+
+        .admin-sidebar.collapsed .sidebar-brand span {
+            opacity: 0;
+            width: 0;
+        }
+
+        #toggle-sidebar {
+            width: 36px;
+            height: 36px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        #toggle-sidebar:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        .admin-sidebar.collapsed #toggle-sidebar i {
+            transform: rotate(180deg);
+        }
+
         .sidebar-nav {
             flex: 1;
             padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
+
         .nav-item {
             padding: 12px 20px;
             display: flex;
@@ -61,23 +127,35 @@
             cursor: pointer;
             transition: all 0.2s;
             border-left: 3px solid transparent;
+            white-space: nowrap;
         }
+
         .nav-item:hover {
             background: rgba(255,68,68,0.1);
             color: var(--text);
         }
+
         .nav-item.active {
             background: rgba(255,68,68,0.15);
             color: var(--accent);
             border-left-color: var(--accent);
         }
+
         .nav-item i {
             width: 20px;
+            font-size: 18px;
         }
+
+        .admin-sidebar.collapsed .nav-item span {
+            opacity: 0;
+            width: 0;
+        }
+
         .sidebar-footer {
             padding: 20px;
             border-top: 1px solid var(--border);
         }
+
         .logout-btn {
             width: 100%;
             padding: 10px;
@@ -91,46 +169,136 @@
             justify-content: center;
             gap: 8px;
             transition: all 0.2s;
+            white-space: nowrap;
         }
+
         .logout-btn:hover {
             background: var(--accent);
             color: white;
             border-color: var(--accent);
         }
-        /* MAIN CONTENT */
+
+        .admin-sidebar.collapsed .logout-btn span {
+            opacity: 0;
+            width: 0;
+        }
+
+        /* ===== MAIN CONTENT ===== */
         .admin-main {
             flex: 1;
-            padding: 20px;
-            overflow-y: auto;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            background: var(--bg-dark);
         }
-        .content-header {
-            margin-bottom: 20px;
+
+        .main-header {
+            padding: 20px 30px;
+            background: var(--bg-sidebar);
+            border-bottom: 1px solid var(--border);
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
-        .content-header h1 {
+
+        .main-header h1 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .admin-status {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 30px;
+            font-size: 13px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(76,175,80,0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(76,175,80,0); }
+            100% { box-shadow: 0 0 0 0 rgba(76,175,80,0); }
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 20px 30px;
+            overflow-y: auto;
+        }
+
+        /* ===== DASHBOARD CARDS ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 24px;
         }
-        .stats {
-            display: flex;
-            gap: 20px;
+
+        .stat-icon.blue { background: rgba(33,150,243,0.15); color: #2196f3; }
+        .stat-icon.green { background: rgba(76,175,80,0.15); color: #4caf50; }
+        .stat-icon.orange { background: rgba(255,152,0,0.15); color: #ff9800; }
+        .stat-icon.red { background: rgba(244,67,54,0.15); color: #f44336; }
+
+        .stat-info h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
         }
-        .stat-item {
-            background: var(--bg-sidebar);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
+
+        .stat-info p {
+            color: var(--text-muted);
+            font-size: 13px;
         }
-        /* LIVE CHAT AREA */
+
+        /* ===== LIVE CHAT ===== */
         .chat-container {
             display: flex;
-            flex: 1;
             gap: 20px;
-            height: calc(100vh - 120px);
+            height: calc(100vh - 200px);
         }
+
         .user-list {
             width: 280px;
             background: var(--bg-sidebar);
@@ -140,15 +308,18 @@
             flex-direction: column;
             overflow: hidden;
         }
+
         .user-list-header {
             padding: 15px;
             border-bottom: 1px solid var(--border);
             font-weight: 600;
         }
+
         .user-items {
             flex: 1;
             overflow-y: auto;
         }
+
         .user-item {
             padding: 12px 15px;
             display: flex;
@@ -158,12 +329,15 @@
             border-bottom: 1px solid var(--border);
             transition: all 0.2s;
         }
+
         .user-item:hover {
             background: rgba(255,68,68,0.1);
         }
+
         .user-item.active {
             background: rgba(255,68,68,0.2);
         }
+
         .user-avatar {
             width: 40px;
             height: 40px;
@@ -173,13 +347,28 @@
             align-items: center;
             justify-content: center;
         }
+
         .user-info {
             flex: 1;
+            min-width: 0;
         }
+
         .user-name {
             font-weight: 600;
             font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
+
+        .unread-badge {
+            background: var(--accent);
+            color: white;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 10px;
+        }
+
         .user-preview {
             font-size: 12px;
             color: var(--text-muted);
@@ -187,14 +376,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .unread-badge {
-            background: var(--accent);
-            color: white;
-            border-radius: 10px;
-            padding: 2px 6px;
-            font-size: 10px;
-            margin-left: 5px;
-        }
+
         .chat-area {
             flex: 1;
             background: var(--bg-sidebar);
@@ -204,6 +386,7 @@
             flex-direction: column;
             overflow: hidden;
         }
+
         .chat-header {
             padding: 15px 20px;
             border-bottom: 1px solid var(--border);
@@ -211,6 +394,7 @@
             align-items: center;
             justify-content: space-between;
         }
+
         .chat-messages {
             flex: 1;
             padding: 20px;
@@ -219,6 +403,7 @@
             flex-direction: column;
             gap: 10px;
         }
+
         .message {
             max-width: 70%;
             padding: 10px 14px;
@@ -226,26 +411,31 @@
             font-size: 14px;
             word-wrap: break-word;
         }
+
         .message.user {
             background: var(--accent);
             color: white;
             align-self: flex-end;
         }
+
         .message.admin {
             background: #404040;
             color: white;
             align-self: flex-start;
         }
+
         .message-footer {
             font-size: 10px;
             color: rgba(255,255,255,0.5);
             margin-top: 4px;
             text-align: right;
         }
+
         .chat-input-area {
             padding: 15px 20px;
             border-top: 1px solid var(--border);
         }
+
         .chat-input-wrapper {
             display: flex;
             align-items: center;
@@ -255,6 +445,7 @@
             border-radius: 30px;
             padding: 5px 5px 5px 15px;
         }
+
         .chat-input-wrapper input {
             flex: 1;
             background: transparent;
@@ -263,6 +454,7 @@
             color: white;
             padding: 10px 0;
         }
+
         .chat-send-btn {
             width: 40px;
             height: 40px;
@@ -271,46 +463,89 @@
             border: none;
             color: white;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        /* USER MANAGEMENT TABLE */
+
+        .chat-send-btn:hover {
+            background: var(--accent-hover);
+            transform: scale(1.05);
+        }
+
+        /* ===== USER MANAGEMENT TABLE ===== */
         .users-table {
             width: 100%;
             border-collapse: collapse;
+            background: var(--bg-sidebar);
+            border-radius: 12px;
+            overflow: hidden;
         }
+
         .users-table th {
             text-align: left;
-            padding: 12px;
+            padding: 15px;
             color: var(--text-muted);
+            font-weight: 600;
+            background: rgba(0,0,0,0.2);
             border-bottom: 2px solid var(--border);
         }
+
         .users-table td {
-            padding: 12px;
+            padding: 12px 15px;
             border-bottom: 1px solid var(--border);
         }
+
         .role-badge {
             padding: 4px 8px;
             border-radius: 12px;
             font-size: 12px;
+            font-weight: 500;
         }
+
         .role-badge.admin {
             background: rgba(255,68,68,0.2);
             color: #ff4444;
         }
+
         .role-badge.user {
             background: rgba(33,150,243,0.2);
             color: #2196f3;
         }
+
         .action-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
             cursor: pointer;
             padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
         }
+
         .action-btn:hover {
-            color: var(--accent);
+            background: var(--accent);
+            color: white;
         }
-        /* MODAL */
+
+        .add-user-btn {
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .add-user-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* ===== MODAL ===== */
         .modal {
             display: none;
             position: fixed;
@@ -320,68 +555,112 @@
             justify-content: center;
             z-index: 1000;
         }
-        .modal.active { display: flex; }
+
+        .modal.active {
+            display: flex;
+        }
+
         .modal-content {
-            background: var(--bg-card);
-            border-radius: 12px;
+            background: var(--bg-sidebar);
+            border: 1px solid var(--border);
+            border-radius: 16px;
             width: 90%;
             max-width: 400px;
             padding: 20px;
         }
+
         .modal-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             margin-bottom: 20px;
         }
+
+        .modal-header h3 {
+            font-size: 18px;
+        }
+
         .modal-close {
-            background: none;
+            background: transparent;
             border: none;
             color: white;
             font-size: 20px;
             cursor: pointer;
         }
+
         .form-group {
             margin-bottom: 15px;
         }
+
         .form-group label {
             display: block;
             margin-bottom: 5px;
             color: var(--text-muted);
+            font-size: 13px;
         }
-        .form-group input, .form-group select {
+
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 10px;
             background: rgba(255,255,255,0.1);
             border: 1px solid var(--border);
             border-radius: 6px;
             color: white;
+            outline: none;
         }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+        }
+
         .modal-actions {
             display: flex;
             gap: 10px;
             justify-content: flex-end;
             margin-top: 20px;
         }
+
         .cancel-btn, .submit-btn {
             padding: 8px 16px;
             border-radius: 6px;
             border: none;
             cursor: pointer;
+            transition: all 0.2s;
         }
-        .cancel-btn { background: #333; color: white; }
-        .submit-btn { background: var(--accent); color: white; }
+
+        .cancel-btn {
+            background: #333;
+            color: white;
+        }
+
+        .submit-btn {
+            background: var(--accent);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background: var(--accent-hover);
+        }
     </style>
 </head>
 <body>
     <!-- SIDEBAR -->
-    <div class="admin-sidebar">
+    <div class="admin-sidebar" id="adminSidebar">
         <div class="sidebar-header">
-            <i class="fas fa-bolt"></i>
-            <h2>Admin Panel</h2>
+            <div class="sidebar-brand">
+                <i class="fas fa-bolt"></i>
+                <span>Admin Panel</span>
+            </div>
+            <button id="toggle-sidebar"><i class="fas fa-chevron-left"></i></button>
         </div>
         <div class="sidebar-nav">
-            <div class="nav-item active" onclick="showSection('chat')">
+            <div class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-chart-pie"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="showSection('chat')">
                 <i class="fas fa-comments"></i>
                 <span>Live Chat</span>
             </div>
@@ -400,50 +679,96 @@
 
     <!-- MAIN CONTENT -->
     <div class="admin-main">
-        <div class="content-header">
-            <h1 id="section-title">Live Chat</h1>
-            <div class="stats">
-                <div class="stat-item">Online: <span id="online-count">0</span></div>
-                <div class="stat-item">Pesan: <span id="message-count">0</span></div>
-            </div>
-        </div>
-
-        <!-- SECTION LIVE CHAT -->
-        <div id="chat-section" class="chat-container" style="display: flex;">
-            <!-- Daftar User -->
-            <div class="user-list">
-                <div class="user-list-header">Users</div>
-                <div class="user-items" id="user-items">
-                    <!-- User list akan diisi JS -->
-                </div>
-            </div>
-            <!-- Area Chat -->
-            <div class="chat-area" id="chat-area">
-                <div class="chat-header" id="chat-header" style="display: none;">
-                    <div>
-                        <strong id="current-chat-user"></strong>
-                        <span id="current-chat-status"></span>
-                    </div>
-                </div>
-                <div class="chat-messages" id="chat-messages"></div>
-                <div class="chat-input-area" id="chat-input-area" style="display: none;">
-                    <div class="chat-input-wrapper">
-                        <input type="text" id="admin-message-input" placeholder="Ketik pesan...">
-                        <button class="chat-send-btn" onclick="sendAdminMessage()"><i class="fas fa-paper-plane"></i></button>
-                    </div>
+        <div class="main-header">
+            <h1 id="section-title">Dashboard</h1>
+            <div class="admin-status">
+                <div class="status-badge">
+                    <span class="status-dot"></span>
+                    <span>Online</span>
                 </div>
             </div>
         </div>
 
-        <!-- SECTION USER MANAGEMENT -->
-        <div id="users-section" style="display: none;">
-            <button class="add-user-btn" onclick="openUserModal()">+ Tambah User</button>
-            <table class="users-table">
-                <thead>
-                    <tr><th>Username</th><th>Role</th><th>Aksi</th></tr>
-                </thead>
-                <tbody id="users-tbody"></tbody>
-            </table>
+        <div class="content-area" id="content-area">
+            <!-- SECTION DASHBOARD -->
+            <div id="dashboard-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-users"></i></div>
+                        <div class="stat-info">
+                            <h3 id="total-users">0</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-user-shield"></i></div>
+                        <div class="stat-info">
+                            <h3 id="total-admins">0</h3>
+                            <p>Admins</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-comments"></i></div>
+                        <div class="stat-info">
+                            <h3 id="active-chats">0</h3>
+                            <p>Active Chats</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon red"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info">
+                            <h3 id="pending-replies">0</h3>
+                            <p>Pending Replies</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="color: var(--text-muted); text-align: center; padding: 40px;">
+                    <i class="fas fa-chart-line" style="font-size: 48px; opacity: 0.5;"></i>
+                    <p style="margin-top: 10px;">Statistik real-time akan muncul di sini</p>
+                </div>
+            </div>
+
+            <!-- SECTION LIVE CHAT (hidden by default) -->
+            <div id="chat-section" style="display: none;">
+                <div class="chat-container">
+                    <!-- Daftar User -->
+                    <div class="user-list">
+                        <div class="user-list-header">Users</div>
+                        <div class="user-items" id="user-items"></div>
+                    </div>
+                    <!-- Area Chat -->
+                    <div class="chat-area">
+                        <div class="chat-header" id="chat-header" style="display: none;">
+                            <div>
+                                <strong id="current-chat-user"></strong>
+                                <span id="current-chat-status" style="margin-left: 10px; font-size: 12px; color: var(--success);">● Online</span>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="chat-messages"></div>
+                        <div class="chat-input-area" id="chat-input-area" style="display: none;">
+                            <div class="chat-input-wrapper">
+                                <input type="text" id="admin-message-input" placeholder="Ketik pesan...">
+                                <button class="chat-send-btn" onclick="sendAdminMessage()"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION USER MANAGEMENT (hidden by default) -->
+            <div id="users-section" style="display: none;">
+                <button class="add-user-btn" onclick="openUserModal()"><i class="fas fa-plus"></i> Tambah User</button>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-tbody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -486,6 +811,13 @@
             window.location.href = 'login.html';
         }
 
+        // ========== SIDEBAR TOGGLE ==========
+        const sidebar = document.getElementById('adminSidebar');
+        const toggleBtn = document.getElementById('toggle-sidebar');
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+        });
+
         // ========== STATE ==========
         let users = JSON.parse(localStorage.getItem('users_db') || '[]');
         let liveChatMessages = JSON.parse(localStorage.getItem('live_chat_messages') || '[]');
@@ -501,13 +833,23 @@
         // ========== NAVIGASI ==========
         function showSection(section) {
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            if (section === 'chat') {
+            if (section === 'dashboard') {
                 document.querySelector('.nav-item:nth-child(1)').classList.add('active');
-                document.getElementById('chat-section').style.display = 'flex';
+                document.getElementById('dashboard-section').style.display = 'block';
+                document.getElementById('chat-section').style.display = 'none';
+                document.getElementById('users-section').style.display = 'none';
+                document.getElementById('section-title').innerText = 'Dashboard';
+                updateStats();
+            } else if (section === 'chat') {
+                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+                document.getElementById('dashboard-section').style.display = 'none';
+                document.getElementById('chat-section').style.display = 'block';
                 document.getElementById('users-section').style.display = 'none';
                 document.getElementById('section-title').innerText = 'Live Chat';
+                loadUserList();
             } else {
-                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
+                document.querySelector('.nav-item:nth-child(3)').classList.add('active');
+                document.getElementById('dashboard-section').style.display = 'none';
                 document.getElementById('chat-section').style.display = 'none';
                 document.getElementById('users-section').style.display = 'block';
                 document.getElementById('section-title').innerText = 'User Management';
@@ -515,13 +857,21 @@
             }
         }
 
+        // ========== DASHBOARD STATS ==========
+        function updateStats() {
+            document.getElementById('total-users').innerText = users.length;
+            document.getElementById('total-admins').innerText = users.filter(u => u.role === 'admin').length;
+            const activeChats = [...new Set(liveChatMessages.filter(m => m.sender === 'user').map(m => m.sender))].length;
+            document.getElementById('active-chats').innerText = activeChats;
+            const pending = liveChatMessages.filter(m => !m.read && m.sender === 'user').length;
+            document.getElementById('pending-replies').innerText = pending;
+        }
+
         // ========== LIVE CHAT ==========
         function loadUserList() {
             const userList = document.getElementById('user-items');
             const userMessages = liveChatMessages.filter(m => m.sender === 'user');
             const uniqueUsers = [...new Set(userMessages.map(m => m.sender))];
-            
-            document.getElementById('message-count').innerText = liveChatMessages.filter(m => !m.read).length;
 
             if (uniqueUsers.length === 0) {
                 userList.innerHTML = '<div style="padding:20px; text-align:center; color:#888;">Belum ada chat</div>';
@@ -587,6 +937,7 @@
             input.value = '';
             loadChatMessages(selectedUserId);
             loadUserList();
+            updateStats();
         }
 
         // ========== USER MANAGEMENT ==========
@@ -609,15 +960,21 @@
                     </td>
                 </tr>
             `).join('');
+            updateStats();
         }
 
         function openUserModal() {
+            document.getElementById('modal-title').innerText = 'Tambah User';
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('role').value = 'user';
             document.getElementById('user-modal').classList.add('active');
-            document.getElementById('user-form').reset();
         }
+
         function closeUserModal() {
             document.getElementById('user-modal').classList.remove('active');
         }
+
         function saveUser(e) {
             e.preventDefault();
             const newUser = {
@@ -631,6 +988,20 @@
             closeUserModal();
             loadUsers();
         }
+
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+            document.getElementById('modal-title').innerText = 'Edit User';
+            document.getElementById('username').value = user.username;
+            document.getElementById('password').value = user.password;
+            document.getElementById('role').value = user.role;
+            document.getElementById('user-modal').classList.add('active');
+            // Hapus user lama setelah edit? Kita pakai update terpisah
+            // Untuk sederhana, kita hapus dulu lalu tambah baru
+            window.currentEditId = id;
+        }
+
         function deleteUser(id) {
             if (confirm('Hapus user ini?')) {
                 users = users.filter(u => u.id !== id);
@@ -649,11 +1020,17 @@
 
         // ========== INIT ==========
         document.addEventListener('DOMContentLoaded', () => {
-            loadUserList();
+            // Tampilkan dashboard default
+            showSection('dashboard');
+            loadUsers();
+            // Refresh live chat setiap 2 detik jika section chat aktif
             setInterval(() => {
-                liveChatMessages = JSON.parse(localStorage.getItem('live_chat_messages') || '[]');
-                if (selectedUserId) loadChatMessages(selectedUserId);
-                loadUserList();
+                if (document.getElementById('chat-section').style.display === 'block') {
+                    liveChatMessages = JSON.parse(localStorage.getItem('live_chat_messages') || '[]');
+                    if (selectedUserId) loadChatMessages(selectedUserId);
+                    loadUserList();
+                }
+                updateStats();
             }, 2000);
         });
     </script>
